@@ -1,0 +1,20 @@
+[package]
+name = "make-comment-movie"
+version = "0.1.0"
+edition = "2021"
+description = "WhoWatch コメントログを左パネルに焼き込んだ mp4 を ffmpeg で生成する CLI"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "make-comment-movie"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+clap = { version = "4", features = ["derive"] }
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+unicode-linebreak = "0.1"
+unicode-width = "0.2"
