@@ -27,6 +27,25 @@ env -u RUSTC_WRAPPER -u CARGO_BUILD_RUSTC_WRAPPER cargo build --release
   --output ロンシン_2026-04-12T14-51-31.with-comments.mp4
 ```
 
+**mp4 だけを指定する場合**（同じディレクトリの `<動画のベース名>.comments.txt` を探し、`<ベース名>.with-comments.mp4` に書き出します）:
+
+```bash
+./scripts/make-comment-movie-from-mp4.sh ロンシン_2026-04-12T14-51-31.mp4
+```
+
+複数の mp4 を続けて指定すると、順に同じルールで処理します。`make-comment-movie` へ共通で付けたいオプションは、**動画の列の直後**に書きます（先頭の連続する「存在する `.mp4` ファイル」が対象で、**それ以降**がすべて本ツールに透過）。区切りをはっきりさせたいときは **`--`** を使います。
+
+`録画*.mp4` のように **シェル側のグロブ**（`*` ・ `?` ・`{a,b}.mp4` など）も**そのまま使えます**。展開はスクリプトの前（コマンドを打ったシェル）で行われ、得られた各パスが**複数引数**としてスクリプトに渡ります。一致が 0 件のときにエラーになるか・リテラル `録画*.mp4` の 1 引数が渡るかは、**bash / zsh の `nullglob`・`failglob`・`nomatch` 等の設定**に依存するので、必要に応じて `引数` をクォートしないこと・ディレクトリ内に対象が存在することを確認してください。
+
+```bash
+./scripts/make-comment-movie-from-mp4.sh 録画A.mp4 録画B.mp4
+./scripts/make-comment-movie-from-mp4.sh 録画*.mp4
+./scripts/make-comment-movie-from-mp4.sh 録画A.mp4 録画B.mp4 -- --crf 18
+./scripts/make-comment-movie-from-mp4.sh 一本だけ.mp4 -- --video-start "2026-04-12T15:00:00"
+```
+
+バイナリの解決順は、環境変数 `MAKE_COMMENT_MOVIE` → リポジトリ内 `target/release/make-comment-movie` → `PATH` 上の `make-comment-movie` です。複数本のうち 1 本でも `make-comment-movie` が失敗した場合、終了コードは 0 以外になります。
+
 （`PATH` に入れていない場合は `cargo run --release --` のあとに同じ引数を続けてもよい。）
 
 ### 動画の t=0 の時刻
